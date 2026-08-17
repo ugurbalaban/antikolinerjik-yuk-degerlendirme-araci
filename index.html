@@ -193,15 +193,20 @@ function renderSavedPatients() {
   const patient = document.getElementById('patient').value.trim();
   const icuDay = document.getElementById('icuDay').value;
 
-  if (!patient) {
-    alert('Lütfen hasta ID girin.');
-    return;
-  }
+ if (!patient) {
+  alert('Lütfen hasta ID girin.');
+  return;
+}
 
-  if (selected.length === 0) {
-    alert('Lütfen en az bir ilaç ekleyin.');
-    return;
-  }
+if (!icuDay) {
+  alert('Lütfen YBÜ yatış gününü girin.');
+  return;
+}
+
+if (selected.length === 0) {
+  alert('Lütfen en az bir ilaç ekleyin.');
+  return;
+}
 
   const acbTotal = selected
     .filter(d => d.acb !== null)
