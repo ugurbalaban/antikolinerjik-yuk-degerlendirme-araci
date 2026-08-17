@@ -39,8 +39,21 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
 </p>
 
 <div class="grid">
-  <div><label>Hasta kodu / ID</label><input id="patient" placeholder="Örn. H001"></div>
-  <div class="searchbox"><label>İlaç ara</label><input id="drugSearch" autocomplete="off" placeholder="İlaç etken madde adı yazın..."><div id="suggest" class="suggest"></div></div>
+  <div>
+    <label>Hasta kodu / ID</label>
+    <input id="patient" placeholder="Örn. H001">
+  </div>
+
+  <div>
+    <label>YBÜ yatış günü</label>
+    <input id="icuDay" type="number" min="1" placeholder="Örn. 3">
+  </div>
+
+  <div class="searchbox">
+    <label>İlaç ara</label>
+    <input id="drugSearch" autocomplete="off" placeholder="İlaç etken madde adı yazın...">
+    <div id="suggest" class="suggest"></div>
+  </div>
 </div>
 
 <div class="toolbar">
