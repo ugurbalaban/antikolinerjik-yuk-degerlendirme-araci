@@ -83,8 +83,9 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
   <div style="overflow:auto;">
     <table>
       <thead>
-       <tr>
+      <tr>
   <th>Hasta ID</th>
+  <th class="num">YBÜ Yatış Günü</th>
   <th>İlaçlar</th>
   <th class="num">Toplam ACB</th>
   <th class="num">Toplam ADS</th>
@@ -177,6 +178,7 @@ function renderSavedPatients() {
 
     tr.innerHTML = `
   <td><strong>${p.patient}</strong></td>
+  <td class="num">${p.icuDay}</td>
   <td>${p.drugs.map(d => d.name).join(', ')}</td>
   <td class="num">${p.acbTotal}</td>
   <td class="num">${p.adsTotal}</td>
@@ -189,6 +191,7 @@ function renderSavedPatients() {
 }
   document.getElementById('savePatientBtn').onclick = () => {
   const patient = document.getElementById('patient').value.trim();
+  const icuDay = document.getElementById('icuDay').value;
 
   if (!patient) {
     alert('Lütfen hasta ID girin.');
@@ -208,9 +211,10 @@ function renderSavedPatients() {
     .filter(d => d.ads !== null)
     .reduce((a, d) => a + d.ads, 0);
 
-  savedPatients.push({
-    patient,
-    drugs: selected.map(d => ({
+ savedPatients.push({
+  patient,
+  icuDay,
+  drugs: selected.map(d => ({
       name: d.g,
       acb: d.acb,
       ads: d.ads
@@ -225,6 +229,7 @@ renderSavedPatients();
 
 document.getElementById('newPatientBtn').onclick = () => {
   document.getElementById('patient').value = '';
+  document.getElementById('icuDay').value = '';
   document.getElementById('drugSearch').value = '';
   selected = [];
   render();
@@ -239,12 +244,13 @@ document.getElementById('excelBtn').onclick = () => {
   }
 
 const summaryData = [
-  ['Hasta ID', 'İlaçlar', 'Toplam ACB', 'Toplam ADS']
+  ['Hasta ID', 'YBÜ Yatış Günü', 'İlaçlar', 'Toplam ACB', 'Toplam ADS']
 ];
 
 savedPatients.forEach(p => {
   summaryData.push([
     p.patient,
+    p.icuDay,
     p.drugs.map(d => d.name).join(', '),
     p.acbTotal,
     p.adsTotal
@@ -252,36 +258,39 @@ savedPatients.forEach(p => {
 });
 
   const detailData = [
-    ['Hasta ID', 'İlaç Etken Maddesi', 'ACB 2012', 'ADS']
-  ];
+  ['Hasta ID', 'YBÜ Yatış Günü', 'İlaç Etken Maddesi', 'ACB 2012', 'ADS']
+];
 
   savedPatients.forEach(p => {
     p.drugs.forEach(d => {
-      detailData.push([
-        p.patient,
-        d.name,
-        d.acb === null ? 'Kaynakta yok' : d.acb,
-        d.ads === null ? 'Kaynakta yok' : d.ads
-      ]);
+    detailData.push([
+  p.patient,
+  p.icuDay,
+  d.name,
+  d.acb === null ? 'Kaynakta yok' : d.acb,
+  d.ads === null ? 'Kaynakta yok' : d.ads
+]);
     });
   });
 
   const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
   const detailSheet = XLSX.utils.aoa_to_sheet(detailData);
 
- summarySheet['!cols'] = [
+summarySheet['!cols'] = [
   { wch: 18 },
+  { wch: 16 },
   { wch: 45 },
   { wch: 15 },
   { wch: 15 }
 ];
 
-  detailSheet['!cols'] = [
-    { wch: 18 },
-    { wch: 30 },
-    { wch: 15 },
-    { wch: 15 }
-  ];
+detailSheet['!cols'] = [
+  { wch: 18 },
+  { wch: 16 },
+  { wch: 30 },
+  { wch: 15 },
+  { wch: 15 }
+];
 
   const workbook = XLSX.utils.book_new();
 
