@@ -22,7 +22,7 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
 .empty{padding:20px;text-align:center;color:var(--muted)} .meta{font-size:12px;color:var(--muted);margin-top:6px}
 @media(max-width:700px){th,td{padding:9px 5px}}
 </style>
-</head>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script></head>
 <body>
 <div class="wrap"><div class="card">
 <h1>Antikolinerjik Yük Değerlendirme Aracı</h1>
@@ -45,7 +45,7 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
 
 <div class="toolbar">
   <button class="btn ghost" id="clearBtn">Listeyi temizle</button>
-  <button class="btn ghost" id="csvBtn">CSV indir</button>
+  <button class="btn ghost" id="excelBtn">Excel indir</button>
 </div>
 
 <div style="overflow:auto">
@@ -125,19 +125,44 @@ function render() {
 window.removeDrug = i => { selected.splice(i,1); render(); };
 document.getElementById('clearBtn').onclick = () => { selected=[]; render(); };
 
-document.getElementById('csvBtn').onclick = () => {
+document.getElementById('excelBtn').onclick = () => {
   const patient = document.getElementById('patient').value || '';
-  const acbT = selected.filter(d=>d.acb!==null).reduce((a,d)=>a+d.acb,0);
-  const adsT = selected.filter(d=>d.ads!==null).reduce((a,d)=>a+d.ads,0);
-  const lines = [
-    ['Hasta ID','İlaç','ACB 2012','ADS 2006'],
-    ...selected.map(d=>[patient,d.g,d.acb===null?'Kaynakta yok':d.acb,d.ads===null?'Kaynakta yok':d.ads]),
-    ['','TOPLAM',acbT,adsT]
+
+  const acbT = selected
+    .filter(d => d.acb !== null)
+    .reduce((a, d) => a + d.acb, 0);
+
+  const adsT = selected
+    .filter(d => d.ads !== null)
+    .reduce((a, d) => a + d.ads, 0);
+
+  const data = [
+    ['Hasta ID', 'İlaç Etken Maddesi', 'ACB 2012', 'ADS'],
+    ...selected.map(d => [
+      patient,
+      d.g,
+      d.acb === null ? 'Kaynakta yok' : d.acb,
+      d.ads === null ? 'Kaynakta yok' : d.ads
+    ]),
+    ['', 'TOPLAM', acbT, adsT]
   ];
-  const csv='\ufeff'+lines.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(';')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`ACB_ADS_${patient||'hasta'}.csv`; a.click(); URL.revokeObjectURL(a.href);
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+  worksheet['!cols'] = [
+    { wch: 15 },
+    { wch: 30 },
+    { wch: 15 },
+    { wch: 15 }
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Antikolinerjik Yük');
+
+  XLSX.writeFile(
+    workbook,
+    `Antikolinerjik_Yuk_${patient || 'hasta'}.xlsx`
+  );
 };
 render();
 </script>
