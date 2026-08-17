@@ -62,7 +62,30 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
   <div class="totalbox"><div class="small">TOPLAM ACB SKORU</div><div id="acbTotal" class="score">0</div><div id="acbCount" class="meta">0 puanlanan ilaç</div></div>
   <div class="totalbox"><div class="small">TOPLAM ADS SKORU</div><div id="adsTotal" class="score">0</div><div id="adsCount" class="meta">0 puanlanan ilaç</div></div>
 </div>
+</div>
 
+<div style="margin-top:24px;">
+  <h2 style="font-size:20px; margin-bottom:10px;">Kayıtlı Hastalar</h2>
+
+  <div style="overflow:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Hasta ID</th>
+          <th class="num">Toplam ACB</th>
+          <th class="num">Toplam ADS</th>
+        </tr>
+      </thead>
+      <tbody id="savedPatientsTable"></tbody>
+    </table>
+  </div>
+
+  <div id="savedPatientsEmpty" class="empty">
+    Henüz kayıtlı hasta yok.
+  </div>
+</div>
+
+<div id="warning" class="warning"></div>
 <div id="warning" class="warning"></div>
 <div class="note">
 <span style="font-size:20px;">⚠️</span> Hasta ilaç listesi üzerinden <strong>ACB ve ADS ölçeklerine ait puanlar eş zamanlı ve birbirinden bağımsız olarak hesaplanmaktadır.</strong> Bir ilaç etken maddesi yalnızca ACB veya ADS ölçeklerinden birinde yer alıyorsa, yer almadığı ölçek için <strong>“Kaynakta yok”</strong> olarak gösterilmekte ve ilgili ölçeğin toplam puan hesaplamasına dahil edilmemektedir. Her iki ölçek kapsamında da yer almayan ilaç etken maddeleri ise arama sonuçlarında gösterilmemektedir. İlaç etken maddeleri, ölçeklerin orijinal kaynaklarıyla uyumlu olarak <strong>İngilizce</strong> adlarıyla aranmalıdır.
@@ -127,7 +150,27 @@ function render() {
 }
 window.removeDrug = i => { selected.splice(i,1); render(); };
 document.getElementById('clearBtn').onclick = () => { selected=[]; render(); };
-document.getElementById('savePatientBtn').onclick = () => {
+function renderSavedPatients() {
+  const tbody = document.getElementById('savedPatientsTable');
+  const empty = document.getElementById('savedPatientsEmpty');
+
+  tbody.innerHTML = '';
+
+  savedPatients.forEach(p => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td><strong>${p.patient}</strong></td>
+      <td class="num">${p.acbTotal}</td>
+      <td class="num">${p.adsTotal}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  empty.style.display = savedPatients.length ? 'none' : 'block';
+}
+  document.getElementById('savePatientBtn').onclick = () => {
   const patient = document.getElementById('patient').value.trim();
 
   if (!patient) {
@@ -158,7 +201,7 @@ document.getElementById('savePatientBtn').onclick = () => {
     acbTotal,
     adsTotal
   });
-
+renderSavedPatients();
   alert(`${patient} kaydedildi. Toplam kayıtlı hasta: ${savedPatients.length}`);
 };
 
@@ -241,6 +284,7 @@ document.getElementById('excelBtn').onclick = () => {
   );
 };
 render();
+  renderSavedPatients();
 </script>
 </body>
 </html>
