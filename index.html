@@ -117,7 +117,7 @@ function render() {
   const missingD = selected.filter(d=>d.ads===null).map(d=>d.g);
   const warn = document.getElementById('warning');
   let txt=[];
-  if(missingA.length) txt.push(`ACB kaynağında bulunmayan: ${missingA.join(', ')}`);
+  if(missingA.length) txt.push(`ACB ölçeğinde bulunmayan: ${missingA.join(', ')}`);
   if(missingD.length) txt.push(`ADS Level 0–3 listesinde bulunmayan: ${missingD.join(', ')}`);
   warn.innerHTML = txt.join('<br>');
   warn.style.display = txt.length ? 'block' : 'none';
