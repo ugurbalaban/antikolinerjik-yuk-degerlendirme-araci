@@ -225,17 +225,18 @@ document.getElementById('excelBtn').onclick = () => {
     return;
   }
 
-  const summaryData = [
-    ['Hasta ID', 'Toplam ACB', 'Toplam ADS']
-  ];
+const summaryData = [
+  ['Hasta ID', 'İlaçlar', 'Toplam ACB', 'Toplam ADS']
+];
 
-  savedPatients.forEach(p => {
-    summaryData.push([
-      p.patient,
-      p.acbTotal,
-      p.adsTotal
-    ]);
-  });
+savedPatients.forEach(p => {
+  summaryData.push([
+    p.patient,
+    p.drugs.map(d => d.name).join(', '),
+    p.acbTotal,
+    p.adsTotal
+  ]);
+});
 
   const detailData = [
     ['Hasta ID', 'İlaç Etken Maddesi', 'ACB 2012', 'ADS']
@@ -255,11 +256,12 @@ document.getElementById('excelBtn').onclick = () => {
   const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
   const detailSheet = XLSX.utils.aoa_to_sheet(detailData);
 
-  summarySheet['!cols'] = [
-    { wch: 18 },
-    { wch: 15 },
-    { wch: 15 }
-  ];
+ summarySheet['!cols'] = [
+  { wch: 18 },
+  { wch: 45 },
+  { wch: 15 },
+  { wch: 15 }
+];
 
   detailSheet['!cols'] = [
     { wch: 18 },
