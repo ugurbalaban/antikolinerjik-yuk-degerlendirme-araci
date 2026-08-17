@@ -233,14 +233,24 @@ renderSavedPatients();
 
 
 document.getElementById('newPatientBtn').onclick = () => {
+  // Yeni hasta için giriş alanlarını temizle
   document.getElementById('patient').value = '';
   document.getElementById('icuDay').value = '';
   document.getElementById('drugSearch').value = '';
+
+  // Önceki hastanın ilaç listesini temizle
   selected = [];
+
+  // Arama önerilerini kapat
+  document.getElementById('suggest').innerHTML = '';
+  document.getElementById('suggest').style.display = 'none';
+
+  // ACB ve ADS hesaplamalarını yeniden oluştur
   render();
+
+  // Hasta ID alanına geri dön
   document.getElementById('patient').focus();
 };
-
 
 document.getElementById('excelBtn').onclick = () => {
   if (savedPatients.length === 0) {
