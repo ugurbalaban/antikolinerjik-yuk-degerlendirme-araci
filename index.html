@@ -70,11 +70,12 @@ table{width:100%;border-collapse:collapse;margin-top:8px} th,td{padding:11px 9px
   <div style="overflow:auto;">
     <table>
       <thead>
-        <tr>
-          <th>Hasta ID</th>
-          <th class="num">Toplam ACB</th>
-          <th class="num">Toplam ADS</th>
-        </tr>
+       <tr>
+  <th>Hasta ID</th>
+  <th>İlaçlar</th>
+  <th class="num">Toplam ACB</th>
+  <th class="num">Toplam ADS</th>
+</tr>
       </thead>
       <tbody id="savedPatientsTable"></tbody>
     </table>
@@ -162,10 +163,11 @@ function renderSavedPatients() {
     const tr = document.createElement('tr');
 
     tr.innerHTML = `
-      <td><strong>${p.patient}</strong></td>
-      <td class="num">${p.acbTotal}</td>
-      <td class="num">${p.adsTotal}</td>
-    `;
+  <td><strong>${p.patient}</strong></td>
+  <td>${p.drugs.map(d => d.name).join(', ')}</td>
+  <td class="num">${p.acbTotal}</td>
+  <td class="num">${p.adsTotal}</td>
+`;
 
     tbody.appendChild(tr);
   });
