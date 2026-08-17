@@ -154,6 +154,8 @@ function renderSavedPatients() {
   const tbody = document.getElementById('savedPatientsTable');
   const empty = document.getElementById('savedPatientsEmpty');
 
+  if (!tbody || !empty) return;
+
   tbody.innerHTML = '';
 
   savedPatients.forEach(p => {
